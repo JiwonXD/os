@@ -10,60 +10,67 @@
 // 전역 파일 시스템 구조체
 tree* structure;
 
-void run(char* cmd, int cmdopt);
+void run(char* cmd);
 
 int main() {
     // 파일 시스템 초기화
     dir* root_dir = new_root();
     structure = new_tree(root_dir);
 
-    char cmd[100];
-    char* temp;
-    int length;
+    char command[300];
+
+    file* testfile = new_file("testfile.txt");
+    structure->current->file_inside = testfile;
+    testfile->permission = 700;
 
     while (1) {
         printf("osmanager:%s$ ", structure->current->name);  // 프롬프트
-        gets(cmd);
-	run(cmd);
+        fgets(command, sizeof(command), stdin);
+	run(command);
     }
 
+    
     return 0;
 }
 
 void run(char* input)
 {
 	char* cmd = NULL;
-	char temp[300];
-	char opt;
-	dir temp_dir = NULL;
+	const char* opt = NULL;
+	const char* temppath = NULL;
+
+	dir* temp_dir = NULL;
 	file* tempfile = NULL;
 
-	strncpy(temp, cmd, 300);
+	size_t len = strlen(input);
+	while(len > 0 && input[len - 1] == '\n') {
+		input[--len] = '\0';
+	}
 
 	if(strcmp(input, "") == 0)
 	{
-		return 0;
+		return;
 	}
 
 	cmd = strtok(input, " ");
 	
-	else if(strcmp(cmd, "ls") == 0)
+	if(strcmp(cmd, "ls") == 0)
 	{
-		if (strchr(temp, '-') == NULL)
-		{
-			opt = '-';
-			lsCommand(structure, opt);
+		opt = strtok(NULL, " ");
+		if (opt == NULL) {
+			opt = "-";
 		}
-		else
-		{
-			cmd = strtok(NULL, " ");
-			lsCommand(structure, cmd);
-		}
+		lsCommand(structure->current, opt);
 	}
-
+	else if(strcmp(cmd, "chown") == 0)
+	{
+		opt = strtok(NULL, " ");
+		temppath = strtok(NULL, " ");
+		chownCommand(structure->current, temppath, opt);
+	}		
 	else if(strcmp(cmd, "exit") == 0)
 	{
-		return 0;
+		exit(0);
 	}
 	else
 	{
