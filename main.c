@@ -6,6 +6,8 @@
 #include "getpointer.h"
 #include "chown.h"
 #include "ls.h"
+#include "grep.h"
+#include "find.h"
 
 // 전역 파일 시스템 구조체
 tree* structure;
@@ -19,8 +21,16 @@ int main() {
 
     char command[300];
 
+    //테스트용 파일,디렉토리 생성
     file* testfile = new_file("testfile.txt");
     structure->current->file_inside = testfile;
+    testfile->permission = 700;
+    strcpy(testfile->data,"abcabcdabcde");
+    dir* testdir = new_dir("testdir");
+    root_dir->left = testdir;
+    testdir->parent = root_dir;
+    file* testfile2 = new_file("testfile2.txt");
+    testdir->file_inside = testfile;
     testfile->permission = 700;
 
     while (1) {
@@ -38,6 +48,8 @@ void run(char* input)
 	char* cmd = NULL;
 	const char* opt = NULL;
 	const char* temppath = NULL;
+	char* pattern = NULL;
+	char* filename = NULL;
 
 	dir* temp_dir = NULL;
 	file* tempfile = NULL;
@@ -67,7 +79,24 @@ void run(char* input)
 		opt = strtok(NULL, " ");
 		temppath = strtok(NULL, " ");
 		chownCommand(structure->current, temppath, opt);
-	}		
+	}
+	else if(strcmp(cmd, "grep") == 0)
+	{
+		pattern = strtok(NULL, " ");
+		filename = strtok(NULL, " ");
+		if (pattern && filename) {
+			grep(structure, pattern, filename);
+		}
+	}
+
+	else if(strcmp(cmd, "find") == 0)
+	{
+		cmd = strtok(NULL, " ");
+		if (cmd == NULL) {
+			cmd = "-";
+		}
+		find(structure, cmd);
+	}
 	else if(strcmp(cmd, "exit") == 0)
 	{
 		exit(0);

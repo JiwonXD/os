@@ -1,0 +1,4 @@
+testfile.txt
+testfile.txt/testfile.txt
+testfile.txt/testdir
+testfile.txt/testdir/testfile.txt

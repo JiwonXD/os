@@ -1,4 +1,5 @@
 #include "find.h"
+#include <stdlib.h>
 
 #define MAX_THREADS 20
 
