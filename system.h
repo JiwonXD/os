@@ -8,6 +8,7 @@
 typedef struct file file;
 typedef struct dir dir;
 typedef struct tree tree;
+typedef struct stack stack;
 
 struct file {
     char name[20];
@@ -34,10 +35,21 @@ struct tree {
     dir* current;
 };
 
+struct stack {
+	int top;
+	char* datas[1024];
+};
+
+
 dir* new_root();
 tree* new_tree(dir* rootnode);
 file* new_file(char* name);
 dir* new_dir(char* name);
+stack* new_stack();
+
+int check_stack_empty(stack* newstack);
+void push(stack* newstack, char* input);
+void pop(stack* newstack);
 
 #endif
 

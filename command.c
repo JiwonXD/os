@@ -3,41 +3,19 @@
 #include <string.h>
 
 #include "system.h"
-#include "command.h"
+#include "getpointer.h"
+#include "chown.h"
+#include "ls.h"
+#include "grep.h"
+#include "find.h"
+#include "pwd.h"
+#include "cat.h"
+#include "cd.h"
+
 // 전역 파일 시스템 구조체
-tree* structure;
-stack* pwdstack;
+extern tree* structure;
+extern stack* pwdstack;
 
-int main() {
-    // 파일 시스템 초기화
-    dir* root_dir = new_root();
-    structure = new_tree(root_dir);
-
-    char command[300];
-
-    //테스트용 파일,디렉토리 생성
-    file* testfile = new_file("testfile.txt");
-    structure->current->file_inside = testfile;
-    testfile->permission = 700;
-    strcpy(testfile->data,"abcabcdabcde");
-    dir* testdir = new_dir("testdir");
-    root_dir->left = testdir;
-    testdir->parent = root_dir;
-    file* testfile2 = new_file("testfile2.txt");
-    testdir->file_inside = testfile;
-    testfile->permission = 700;
-
-    while (1) {
-        printf("osmanager:%s$ ", structure->current->name);  // 프롬프트
-        fgets(command, sizeof(command), stdin);
-	run(command);
-    }
-
-    
-    return 0;
-}
-
-/*
 void run(char* input)
 {
 	char* cmd = NULL;
@@ -100,31 +78,12 @@ void run(char* input)
 	{
 		cmd = strtok(NULL, " ");
 		filename = strtok(NULL, " ");
-		if(strcmp(cmd, ">") == 0)
-		{
-			option = 1;
-			cmd = strtok(NULL, " ");
-			cat(structure, cmd, option);
-		}
-		else if(strcmp(cmd, "-n") == 0)
-		{
-			option = 2;
-			cmd = strtok(NULL, " ");
-			cat(structure, cmd, option);
-		}
-		else
-		{
-			option = 0;
-			cat(structure, cmd, option);
-		}
+		run_cat(cmd, filename);
 	}
 	else if(strcmp(cmd, "cd") == 0)
 	{
 		cmd = strtok(NULL, " ");
-		temp_dir = change_directory(structure->root, structure->current, cmd);
-		if (temp_dir != NULL) {
-			structure->current = new_dir;
-		}
+		run_cd(cmd);
 	}
 	else if(strcmp(cmd, "exit") == 0)
 	{
@@ -134,4 +93,4 @@ void run(char* input)
 	{
 		printf("Unknown command: %s\n", cmd);
 	}
-}*/
+}

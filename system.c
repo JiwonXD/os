@@ -3,6 +3,9 @@
 #include <time.h>
 #include "system.h"
 
+#define TRUE 1
+#define FALSE 0
+
 // 루트 디렉토리 생성
 dir* new_root() {
     dir* rootnode = (dir*)malloc(sizeof(dir));
@@ -66,3 +69,28 @@ dir* new_dir(char* name) {
     return dirnode;
 }
 
+stack* new_stack() {
+	stack* newstack = (stack*)malloc(sizeof(stack));
+	newstack->top = -1;
+	return newstack;
+}
+
+int check_stack_empty(stack* newstack)
+{
+	if (newstack->top == -1)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+void push(stack* newstack, char* input) {
+	newstack->top = newstack->top + 1;
+	newstack->datas[newstack->top] = input;
+}
+
+void pop(stack* newstack) {
+	if (check_stack_empty(newstack) == TRUE)
+		return;
+	else
+		newstack->top = newstack->top - 1;
+}
